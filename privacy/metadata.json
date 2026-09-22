@@ -1,6 +1,0 @@
-{
-  "name": "PRIVAGENT - Privacy & PII Guard Engine",
-  "description": "On-device Privacy & PII Guard Engine for PRIVAGENT browser agent (SIH26171). Handles multi-modal sensitive data detection, canvas redaction, token masking, and action validation.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

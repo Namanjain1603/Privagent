@@ -1,6 +1,0 @@
-{
-  "name": "PRIVAGENT M1 - AI Agent Brain",
-  "description": "Standalone M1 reasoning, task decomposition, and structured browser action planner for PRIVAGENT.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
