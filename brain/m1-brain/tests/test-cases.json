@@ -1,0 +1,236 @@
+{
+  "testCases": [
+    {
+      "id": "1-click-action",
+      "name": "Single CLICK action on valid button",
+      "request": {
+        "instruction": "Click on submit button",
+        "pageContext": {
+          "elements": [
+            { "id": "btn-submit", "type": "button", "label": "Submit" }
+          ]
+        }
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionType": "CLICK",
+      "expectedTarget": "btn-submit"
+    },
+    {
+      "id": "2-type-action",
+      "name": "Single TYPE action on text input",
+      "request": {
+        "instruction": "Type John into username",
+        "pageContext": {
+          "elements": [
+            { "id": "username", "type": "input", "label": "Username", "placeholder": "Enter username" }
+          ]
+        }
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionType": "TYPE",
+      "expectedTarget": "username",
+      "expectedValue": "John"
+    },
+    {
+      "id": "3-select-action",
+      "name": "Single SELECT action with valid option",
+      "request": {
+        "instruction": "Select Rajasthan from state dropdown",
+        "pageContext": {
+          "elements": [
+            { "id": "state-select", "type": "select", "label": "State", "options": ["Delhi", "Rajasthan", "Punjab"] }
+          ]
+        }
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionType": "SELECT",
+      "expectedTarget": "state-select",
+      "expectedValue": "Rajasthan"
+    },
+    {
+      "id": "4-scroll-action",
+      "name": "Single SCROLL action DOWN",
+      "request": {
+        "instruction": "Scroll down to see more items",
+        "pageContext": {
+          "elements": [
+            { "id": "main-container", "type": "text", "label": "Container" }
+          ]
+        }
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionType": "SCROLL",
+      "expectedDirection": "DOWN"
+    },
+    {
+      "id": "5-navigate-action",
+      "name": "Single NAVIGATE action with valid URL",
+      "request": {
+        "instruction": "Navigate to https://example.com/portal",
+        "pageContext": {
+          "elements": []
+        }
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionType": "NAVIGATE",
+      "expectedUrl": "https://example.com/portal"
+    },
+    {
+      "id": "6-multistep-task",
+      "name": "Multi-step task (SELECT and then CLICK)",
+      "request": {
+        "instruction": "Select Gujarat in state and click submit",
+        "pageContext": {
+          "elements": [
+            { "id": "state", "type": "select", "label": "State", "options": ["Rajasthan", "Gujarat", "Maharashtra"] },
+            { "id": "submit-btn", "type": "button", "label": "Submit" }
+          ]
+        }
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionCount": 2
+    },
+    {
+      "id": "7-missing-target",
+      "name": "Missing target element in page context (Anti-hallucination check)",
+      "request": {
+        "instruction": "Click the delete account button",
+        "pageContext": {
+          "elements": [
+            { "id": "profile-tab", "type": "button", "label": "Profile" }
+          ]
+        }
+      },
+      "expectedStatus": "FAILED",
+      "expectedCode": "ELEMENT_NOT_FOUND"
+    },
+    {
+      "id": "8-invalid-select-option",
+      "name": "Invalid SELECT option not present in element options",
+      "syntheticPlan": {
+        "status": "SUCCESS",
+        "actions": [
+          { "type": "SELECT", "target": "state", "value": "London" }
+        ]
+      },
+      "elements": [
+        { "id": "state", "type": "select", "label": "State", "options": ["Rajasthan", "Delhi"] }
+      ],
+      "expectedStatus": "FAILED",
+      "expectedCode": "ELEMENT_NOT_FOUND"
+    },
+    {
+      "id": "9-unsupported-action",
+      "name": "Unsupported action type rejected by allowlist",
+      "syntheticPlan": {
+        "status": "SUCCESS",
+        "actions": [
+          { "type": "DRAG_AND_DROP", "target": "box-1", "destination": "box-2" }
+        ]
+      },
+      "elements": [
+        { "id": "box-1", "type": "text", "label": "Box 1" }
+      ],
+      "expectedStatus": "FAILED",
+      "expectedCode": "UNSUPPORTED_ACTION"
+    },
+    {
+      "id": "10-ambiguous-target",
+      "name": "Ambiguous/Incompatible target (TYPE on non-typing element)",
+      "syntheticPlan": {
+        "status": "SUCCESS",
+        "actions": [
+          { "type": "TYPE", "target": "btn-action", "value": "test text" }
+        ]
+      },
+      "elements": [
+        { "id": "btn-action", "type": "button", "label": "Click Me" }
+      ],
+      "expectedStatus": "FAILED",
+      "expectedCode": "UNSUPPORTED_ACTION"
+    },
+    {
+      "id": "11-sensitive-password-otp",
+      "name": "Rejection of raw password/OTP typing request",
+      "request": {
+        "instruction": "Enter password secret123 in the password field",
+        "pageContext": {
+          "elements": [
+            { "id": "pwd-field", "type": "input", "label": "Password" }
+          ]
+        }
+      },
+      "expectedStatus": "FAILED",
+      "expectedCode": "SENSITIVE_DATA_REQUESTED"
+    },
+    {
+      "id": "12-arbitrary-js-attempt",
+      "name": "Rejection of arbitrary JavaScript injection attempt",
+      "syntheticPlan": {
+        "status": "SUCCESS",
+        "actions": [
+          { "type": "CLICK", "target": "btn", "description": "javascript:window.location='hack'" }
+        ]
+      },
+      "elements": [
+        { "id": "btn", "type": "button", "label": "Btn" }
+      ],
+      "expectedStatus": "FAILED",
+      "expectedCode": "UNSUPPORTED_ACTION"
+    },
+    {
+      "id": "13-empty-page-context",
+      "name": "Empty page context when interaction requested",
+      "request": {
+        "instruction": "Fill form and click submit",
+        "pageContext": {
+          "elements": []
+        }
+      },
+      "expectedStatus": "FAILED",
+      "expectedCode": "ELEMENT_NOT_FOUND"
+    },
+    {
+      "id": "14-hinglish-instruction",
+      "name": "Hinglish instruction: Rajasthan select karo aur form submit karo",
+      "request": {
+        "instruction": "Rajasthan select karo aur form submit karo.",
+        "pageContext": {
+          "url": "http://localhost:3000/form",
+          "title": "Demo Form",
+          "elements": [
+            {
+              "id": "state",
+              "type": "select",
+              "label": "State",
+              "options": ["Rajasthan", "Delhi", "Gujarat"]
+            },
+            {
+              "id": "submit",
+              "type": "button",
+              "label": "Submit"
+            }
+          ]
+        },
+        "previousActions": []
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedActionCount": 2,
+      "expectedFirstAction": { "type": "SELECT", "target": "state", "value": "Rajasthan" },
+      "expectedSecondAction": { "type": "CLICK", "target": "submit" }
+    },
+    {
+      "id": "15-task-complete",
+      "name": "TASK_COMPLETE response when goal is already satisfied",
+      "elements": [],
+      "syntheticPlan": {
+        "status": "SUCCESS",
+        "code": "TASK_COMPLETE",
+        "message": "Goal has already been satisfied by prior steps.",
+        "actions": []
+      },
+      "expectedStatus": "SUCCESS",
+      "expectedCode": "TASK_COMPLETE"
+    }
+  ]
+}

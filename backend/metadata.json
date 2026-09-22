@@ -1,0 +1,6 @@
+{
+  "name": "PRIVAGENT Backend & API Service",
+  "description": "FastAPI Backend, REST APIs and schema validation for PRIVAGENT privacy-first visual browser agent (SIH 2026).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

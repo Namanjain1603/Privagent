@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  m1:
+    build:
+      context: ./brain/m1-brain
+    container_name: privagent_m1
+    networks:
+      - privagent_internal
+    env_file:
+      - .env.staging
+    environment:
+      - PORT=3001
+      - M1_ENABLE_MOCK_FALLBACK=false
+    restart: unless-stopped
+
+  m5:
+    build:
+      context: ./backend
+    container_name: privagent_m5
+    expose:
+      - "8000"
+      - "3000"
+    networks:
+      - privagent_internal
+    environment:
+      - ENVIRONMENT=staging
+      - M1_BASE_URL=http://m1:3001
+      - M1_PLAN_PATH=/api/m1/plan
+      - DATABASE_URL=sqlite:///./privagent.db
+    volumes:
+      - m5_data:/app
+    depends_on:
+      - m1
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - privagent_internal
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+networks:
+  privagent_internal:
+    driver: bridge
+
+volumes:
+  m5_data:
+  caddy_data:
+  caddy_config:

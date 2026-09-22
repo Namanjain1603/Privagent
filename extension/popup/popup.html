@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Privagent</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Privagent M3</h1>
+    <span id="status" class="status-indicator"></span>
+  </div>
+  
+  <div class="tab-info" style="margin-bottom: 10px; padding: 5px; background: #eee;">
+    <div><strong>Current Tab:</strong> <span id="tab-title">Loading...</span></div>
+    <div><strong>Status:</strong> <span id="tab-status">...</span></div>
+  </div>
+  
+  <div class="actions">
+    <button id="extract-dom">Extract DOM</button>
+    <button id="capture-screenshot">Capture Screenshot</button>
+  </div>
+  
+  <div class="test-actions">
+    <h3>Test Actions</h3>
+    <select id="action-type">
+      <option value="CLICK">CLICK</option>
+      <option value="TYPE">TYPE</option>
+      <option value="SELECT">SELECT</option>
+      <option value="SCROLL">SCROLL</option>
+      <option value="NAVIGATE">NAVIGATE</option>
+    </select>
+    <input type="text" id="action-target" placeholder="Target ID" />
+    <input type="text" id="action-value" placeholder="Value / URL" />
+    <button id="execute-action">Execute</button>
+  </div>
+
+  <div class="results">
+    <h3>Results</h3>
+    <pre id="output"></pre>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

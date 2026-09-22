@@ -1,0 +1,6 @@
+{
+  "name": "PRIVAGENT - OCR & Vision Module",
+  "description": "Privacy-first local OCR and visual processing module for SIH 2026 PRIVAGENT browser agent.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

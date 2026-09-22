@@ -1,0 +1,9 @@
+{$DOMAIN} {
+    handle /ws* {
+        reverse_proxy m5:3000
+    }
+    
+    handle {
+        reverse_proxy m5:8000
+    }
+}
