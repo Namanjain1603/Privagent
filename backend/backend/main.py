@@ -14,22 +14,31 @@ from backend.routes.telemetry import router as telemetry_router
 from backend.routes.observability import router as observability_router
 
 from backend.websocket_server import ws_app
-import asyncio
+import sys
+import subprocess
+import logging
 
-async def start_ws_server():
-    import uvicorn
-    config = uvicorn.Config(ws_app, host="127.0.0.1", port=3000, log_level="warning")
-    server = uvicorn.Server(config)
-    await server.serve()
+logger = logging.getLogger("privagent_main")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     init_db()
-    ws_task = asyncio.create_task(start_ws_server())
+    logger.info("Starting WebSocket server on port 3000 as subprocess...")
+    ws_process = subprocess.Popen(
+        [sys.executable, "-m", "uvicorn", "backend.websocket_server:ws_app", "--host", "127.0.0.1", "--port", "3000", "--log-level", "warning"],
+        stdout=sys.stdout,
+        stderr=sys.stderr
+    )
     yield
     # Shutdown
-    ws_task.cancel()
+    logger.info("Terminating WebSocket server subprocess...")
+    ws_process.terminate()
+    try:
+        ws_process.wait(timeout=5.0)
+    except subprocess.TimeoutExpired:
+        logger.warning("WebSocket server did not terminate gracefully. Killing process.")
+        ws_process.kill()
 
 
 app = FastAPI(
