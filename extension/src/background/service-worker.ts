@@ -153,6 +153,7 @@ localBridge.setMessageHandler(async (requestId, message) => {
                     let dataUrl = '';
                     let viewport = { width: 1024, height: 768, dpr: 1 };
                     let ocrDetections = [];
+                    let visualPerception = undefined;
                     let screenshotBase64 = '';
 
                     if (tabId !== undefined) {
@@ -199,6 +200,9 @@ localBridge.setMessageHandler(async (requestId, message) => {
                             if (ocrResponse && ocrResponse.detections) {
                                 ocrDetections = ocrResponse.detections;
                             }
+                            if (ocrResponse && ocrResponse.visualPerception) {
+                                visualPerception = ocrResponse.visualPerception;
+                            }
                         } catch (e: any) {
                             console.error('OCR orchestration failed:', e);
                         }
@@ -220,7 +224,8 @@ localBridge.setMessageHandler(async (requestId, message) => {
                         rawDomHtml,
                         screenshotBase64, 
                         ocrDetections,   
-                        normalized.interactableElements
+                        normalized.interactableElements,
+                        visualPerception
                     );
 
                     if (result.verificationPassed && result.outboundPayload) {
@@ -228,7 +233,8 @@ localBridge.setMessageHandler(async (requestId, message) => {
                             type: 'DOM_RESPONSE',
                             sanitizedElements: result.outboundPayload.sanitizedElements,
                             sanitizedDomSkeleton: result.outboundPayload.sanitizedDomSkeleton,
-                            redactedScreenshotBase64: result.outboundPayload.redactedScreenshotBase64
+                            redactedScreenshotBase64: result.outboundPayload.redactedScreenshotBase64,
+                            visualPerception: result.outboundPayload.visualPerception
                         };
                     } else {
                         res = { type: 'ERROR', error: 'Privacy Validation failed: ' + result.verificationLeaks.join(', ') };

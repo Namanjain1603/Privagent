@@ -43,7 +43,8 @@ module.exports = {
         { from: "popup/popup.html", to: "popup.html" },
         { from: "popup/popup.css", to: "popup.css" },
         { from: "src/offscreen/offscreen.html", to: "offscreen.html" },
-        { from: "assets/tesseract", to: "assets/tesseract" }
+        { from: "assets/tesseract", to: "assets/tesseract" },
+        { from: "assets/models", to: "assets/models" }
       ],
     }),
   ],

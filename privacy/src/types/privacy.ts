@@ -137,6 +137,12 @@ export interface M2OutboundSanitizedPayload {
     category: PIICategory;
     purposeHint: string; // e.g. "Cardholder field" or "Primary contact email"
   }>;
+  visualPerception?: {
+    model: string;
+    runtime: 'webgpu' | 'wasm' | 'none';
+    inferenceMs: number;
+    predictions: Array<{ label: string; score: number }>;
+  };
   policyVersion: string;
   verificationSignature: string; // HMAC/Hash proving pre-flight verification passed
 }

@@ -157,7 +157,8 @@ export class PrivacyGuardCoordinator {
       options?: string[];
       disabled?: boolean;
       required?: boolean;
-    }> = []
+    }> = [],
+    visualPerception?: any
   ): {
     outboundPayload: M2OutboundSanitizedPayload | null;
     detections: DetectedEntity[];
@@ -292,7 +293,16 @@ export class PrivacyGuardCoordinator {
       redactedScreenshotBase64,
       detectedTokenList,
       policyVersion: `v1.0-${this.policy.mode}`,
-      verificationSignature: `SHA256:${realSha256}`
+      verificationSignature: `SHA256:${realSha256}`,
+      ...(visualPerception && {
+        visualPerception: {
+          model: visualPerception.model,
+          runtime: visualPerception.runtime,
+          inferenceMs: visualPerception.inferenceMs,
+          predictions: Array.isArray(visualPerception.predictions) ?
+            visualPerception.predictions.map((p: any) => ({ label: p.label, score: p.score })) : []
+        }
+      })
     };
 
     // Step 11: Pre-Flight Verification Pass (with Canvas & Bounding Box Inspection)

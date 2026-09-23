@@ -1,4 +1,5 @@
 import { configureOcrAssets, processScreenshot } from '../../../ocr/src/services/ocrService';
+import { analyzeImage } from './vision/vitVisionService';
 
 // Configure asset paths using chrome.runtime.getURL
 configureOcrAssets({
@@ -41,13 +42,26 @@ async function handleOcrRequest(dataUrl: string, viewport: { width: number, heig
       devicePixelRatio: viewport.dpr
     };
 
-    const result = await processScreenshot(img, metadata, options);
+    const [ocrResult, vitResult] = await Promise.all([
+      processScreenshot(img, metadata, options),
+      analyzeImage(dataUrl).catch(e => ({
+        enabled: true,
+        available: false,
+        degraded: true,
+        reason: e.message || 'VIT_ANALYSIS_FAILED',
+        model: 'vit-tiny-patch16-224',
+        runtime: 'none' as const,
+        inferenceMs: 0,
+        predictions: []
+      }))
+    ]);
     
-    // We only need to return the detections
+    // Return both M4 detections and M2B visual perception
     return { 
-      detections: result.detections, 
-      imageDimensions: result.imageDimensions, 
-      viewportDimensions: result.viewportDimensions 
+      detections: ocrResult.detections,
+      imageDimensions: ocrResult.imageDimensions,
+      viewportDimensions: ocrResult.viewportDimensions,
+      visualPerception: vitResult
     };
   } catch (error: any) {
     return { error: error.message };

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prebuild": "node scripts/download-tesseract-assets.js",
+    "prebuild": "node scripts/download-tesseract-assets.js && node scripts/download-vit-assets.js",
     "build": "webpack",
     "build:staging": "cross-env WS_URL=wss://staging.privagent.example.com/ws webpack",
     "watch": "webpack --watch",
@@ -26,5 +26,8 @@
     "typescript": "^5.4.5",
     "webpack": "^5.111.0",
     "webpack-cli": "^7.2.3"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0"
   }
 }
